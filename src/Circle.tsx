@@ -1,3 +1,4 @@
+import { useState } from "react";
 import styled from "styled-components";
 
 interface CircleProps {
@@ -7,9 +8,15 @@ interface CircleProps {
 }
 
 function Circle({ bgColor, borderColor, text }: CircleProps) {
+  const [counter, setCounter] = useState(0);
+  const addCounter = () => setCounter((state) => state + 1);
   return (
-    <Container bgColor={bgColor} borderColor={borderColor || "transparent"}>
-      {text ? `${text}Circle` : 'Circle'}
+    <Container
+      bgColor={bgColor}
+      borderColor={borderColor || "transparent"}
+      onClick={addCounter}
+    >
+      {text ? `${text}Circle ${counter}` : `Circle ${counter}`}
     </Container>
   );
 }
@@ -26,4 +33,5 @@ const Container = styled("div")<CircleProps>`
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 `;
