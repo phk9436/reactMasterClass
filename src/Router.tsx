@@ -8,7 +8,7 @@ function Router() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<CoinList />} />
-        <Route path="/:id" element={<CoinDetail />} />
+        <Route path="/:id/*" element={<CoinDetail />} />
       </Routes>
     </BrowserRouter>
   );

@@ -17,7 +17,7 @@ function CoinList() {
   const [coins, setCoins] = useState<Coin[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const getCoins = useCallback(async() => {
+  const getCoins = useCallback(async () => {
     try {
       const { data } = await axios.get("https://api.coinpaprika.com/v1/coins");
       const coinData = data.filter((e: Coin, i: number) => i < 100);
@@ -43,7 +43,19 @@ function CoinList() {
         {!loading
           ? coins.map((e) => (
               <CoinsLi key={e.id}>
-                <Link to={`/${e.id}`}>{`${e.name} (${e.type})`} &rarr;</Link>
+                <Link
+                  to={`/${e.id}`}
+                  state={{
+                    name: e.name,
+                    rank: e.rank,
+                  }}
+                >
+                  <img
+                    src={`https://coinicons-api.vercel.app/api/icon/${e.symbol.toLowerCase()}`}
+                    alt=""
+                  />
+                  {`${e.name} (${e.type})`} &rarr;
+                </Link>
               </CoinsLi>
             ))
           : "loading..."}
@@ -84,8 +96,14 @@ const CoinsLi = styled("li")`
   a {
     font-weight: 700;
     transition: 0.1s;
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     padding: 20px;
+  }
+
+  img {
+    width: 30px;
   }
 
   ${(props) => {
