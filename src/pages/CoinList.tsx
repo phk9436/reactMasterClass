@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import styled, { css } from "styled-components";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 
 interface Coin {
   id: string;
@@ -14,25 +15,10 @@ interface Coin {
 }
 
 function CoinList() {
-  const [coins, setCoins] = useState<Coin[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const getCoins = useCallback(async () => {
-    try {
-      const { data } = await axios.get("https://api.coinpaprika.com/v1/coins");
-      const coinData = data.filter((e: Coin, i: number) => i < 100);
-      data.length ? setCoins(coinData) : setCoins([]);
-    } catch (err) {
-      console.dir(err);
-      setCoins([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    getCoins();
-  }, []);
+  const getCoins = async () =>
+    await axios.get("https://api.coinpaprika.com/v1/coins");
+  const { isLoading, data } = useQuery(["CoinList"], getCoins);
+  const coins = data?.data.filter((e: Coin, i: number) => i < 100);
 
   return (
     <Container>
@@ -40,8 +26,8 @@ function CoinList() {
         <h1>Coins</h1>
       </Header>
       <CoinsUl>
-        {!loading
-          ? coins.map((e) => (
+        {!isLoading
+          ? coins.map((e: Coin) => (
               <CoinsLi key={e.id}>
                 <Link
                   to={`/${e.id}`}

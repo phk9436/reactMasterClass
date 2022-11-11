@@ -1,10 +1,12 @@
 import axios from "axios";
 import React, { useState, useEffect, useCallback } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { Route, Routes, Link, useMatch  } from "react-router-dom";
+import { Route, Routes, Link, useMatch } from "react-router-dom";
 import styled from "styled-components";
 import Price from "./Price";
 import Chart from "./Chart";
+import { useQuery } from "@tanstack/react-query";
+
 interface CoinState {
   state: { name: string; rank: number };
 }
@@ -65,52 +67,27 @@ interface PriceData {
 }
 
 function CoinDetail() {
-  const [loading, setLoading] = useState(true);
-  const [info, setInfo] = useState<InfoData>();
-  const [priceInfo, setPriceInfo] = useState<PriceData>();
   const { id } = useParams();
   const { state } = useLocation() as CoinState;
   const priceMatch = useMatch("/:id/price");
   const chartMatch = useMatch("/:id/chart");
 
-  const getCoins = useCallback(async () => {
-    try {
-      const { data } = await axios.get(
-        `https://api.coinpaprika.com/v1/coins/${id}`
-      );
-      setInfo(data);
-    } catch (err) {
-      console.dir(err);
-    }
-  }, [id]);
+  const getCoinInfo = async () =>
+    await axios.get(`https://api.coinpaprika.com/v1/coins/${id}`);
+  const getTickerInfo = async () =>
+    await axios.get(`https://api.coinpaprika.com/v1/tickers/${id}`);
 
-  const getTickers = useCallback(async () => {
-    try {
-      const { data } = await axios.get(
-        `https://api.coinpaprika.com/v1/tickers/${id}`
-      );
-      setPriceInfo(data);
-    } catch (err) {
-      console.dir(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
-
-  useEffect(() => {
-    getCoins();
-    getTickers();
-  }, []);
-
+  const {} = useQuery(["CoinInfo"], getCoinInfo);
+  const {} = useQuery(["TickerInfo"], getTickerInfo);
   return (
     <Container>
       <Header>
         <h1>
           {" "}
-          {state?.name ? state.name : loading ? "Loading..." : info?.name}
+          {/*state?.name ? state.name : loading ? "Loading..." : info?.name*/}
         </h1>
       </Header>
-      {loading ? (
+      {/*loading ? (
         "Loading..."
       ) : (
         <>
@@ -153,7 +130,7 @@ function CoinDetail() {
             <Route path={"chart"} element={<Chart />} />
           </Routes>
         </>
-      )}
+      )*/}
     </Container>
   );
 }
@@ -215,10 +192,10 @@ const Tab = styled.span<{ isActive: boolean }>`
   background-color: rgba(0, 0, 0, 0.5);
   padding: 7px 0px;
   border-radius: 10px;
-  
+
   a {
     display: block;
     color: ${(props) =>
-    props.isActive ? props.theme.accentColor : props.theme.textColor};
+      props.isActive ? props.theme.accentColor : props.theme.textColor};
   }
 `;
