@@ -71,49 +71,65 @@ function CoinDetail() {
   const { state } = useLocation() as CoinState;
   const priceMatch = useMatch("/:id/price");
   const chartMatch = useMatch("/:id/chart");
+  const [coinData, setCoinData] = useState<InfoData>();
+  const [tickerData, setTickerData] = useState<PriceData>()
 
   const getCoinInfo = async () =>
     await axios.get(`https://api.coinpaprika.com/v1/coins/${id}`);
   const getTickerInfo = async () =>
     await axios.get(`https://api.coinpaprika.com/v1/tickers/${id}`);
 
-  const {} = useQuery(["CoinInfo"], getCoinInfo);
-  const {} = useQuery(["TickerInfo"], getTickerInfo);
+  const { isLoading: CoinLoading, data: Coin } = useQuery(
+    ["CoinInfo", id],
+    getCoinInfo
+  );
+  const { isLoading: TickerLoading, data: Ticker } = useQuery(
+    ["TickerInfo", id],
+    getTickerInfo
+  );
+
+  const loading = CoinLoading || TickerLoading;
+
+  useEffect(() => {
+    setCoinData(Coin?.data);
+    setTickerData(Ticker?.data);
+  }, [loading])
+  
   return (
     <Container>
       <Header>
         <h1>
           {" "}
-          {/*state?.name ? state.name : loading ? "Loading..." : info?.name*/}
+          {state?.name ? state.name : loading ? "Loading..." : coinData?.name}
         </h1>
       </Header>
-      {/*loading ? (
+      {loading ? (
         "Loading..."
       ) : (
         <>
           <Overview>
             <OverviewItem>
               <span>Rank:</span>
-              <span>{info?.rank}</span>
+              <span>{coinData?.rank}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Symbol:</span>
-              <span>${info?.symbol}</span>
+              <span>${coinData?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Open Source:</span>
-              <span>{info?.open_source ? "Yes" : "No"}</span>
+              <span>{coinData?.open_source ? "Yes" : "No"}</span>
             </OverviewItem>
           </Overview>
-          <Description>{info?.description}</Description>
+          <Description>{coinData?.description}</Description>
           <Overview>
             <OverviewItem>
               <span>Total Suply:</span>
-              <span>{priceInfo?.total_supply}</span>
+              <span>{tickerData?.total_supply}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Max Supply:</span>
-              <span>{priceInfo?.max_supply}</span>
+              <span>{tickerData?.max_supply}</span>
             </OverviewItem>
           </Overview>
           <Tabs>
@@ -130,7 +146,7 @@ function CoinDetail() {
             <Route path={"chart"} element={<Chart />} />
           </Routes>
         </>
-      )*/}
+      )}
     </Container>
   );
 }
