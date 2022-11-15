@@ -72,29 +72,32 @@ function CoinDetail() {
   const priceMatch = useMatch("/:id/price");
   const chartMatch = useMatch("/:id/chart");
   const [coinData, setCoinData] = useState<InfoData>();
-  const [tickerData, setTickerData] = useState<PriceData>()
+  const [tickerData, setTickerData] = useState<PriceData>();
 
   const getCoinInfo = async () =>
     await axios.get(`https://api.coinpaprika.com/v1/coins/${id}`);
   const getTickerInfo = async () =>
     await axios.get(`https://api.coinpaprika.com/v1/tickers/${id}`);
 
-  const { isLoading: CoinLoading, data: Coin } = useQuery(
-    ["CoinInfo", id],
-    getCoinInfo
-  );
-  const { isLoading: TickerLoading, data: Ticker } = useQuery(
-    ["TickerInfo", id],
-    getTickerInfo
-  );
+  const {
+    isLoading: CoinLoading,
+    data: Coin,
+    isSuccess: CoinSuccess,
+  } = useQuery(["CoinInfo", id], getCoinInfo);
+  const {
+    isLoading: TickerLoading,
+    data: Ticker,
+    isSuccess: TickerSuccess,
+  } = useQuery(["TickerInfo", id], getTickerInfo);
 
-  const loading = CoinLoading || TickerLoading;
+  const loading = CoinLoading && TickerLoading;
+  const success = CoinSuccess && TickerSuccess;
 
   useEffect(() => {
     setCoinData(Coin?.data);
     setTickerData(Ticker?.data);
-  }, [loading])
-  
+  }, [loading]);
+
   return (
     <Container>
       <Header>
@@ -105,6 +108,8 @@ function CoinDetail() {
       </Header>
       {loading ? (
         "Loading..."
+      ) : !success ? (
+        "코인이 존재하지 않습니다"
       ) : (
         <>
           <Overview>
