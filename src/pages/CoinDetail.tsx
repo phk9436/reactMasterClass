@@ -4,7 +4,7 @@ import { useLocation, useParams } from "react-router-dom";
 import { Route, Routes, Link, useMatch } from "react-router-dom";
 import styled from "styled-components";
 import Price from "./Price";
-import Chart from "./Chart";
+import PageChart from "./PageChart";
 import { useQuery } from "@tanstack/react-query";
 
 interface CoinState {
@@ -88,7 +88,9 @@ function CoinDetail() {
     isLoading: TickerLoading,
     data: Ticker,
     isSuccess: TickerSuccess,
-  } = useQuery(["TickerInfo", id], getTickerInfo);
+  } = useQuery(["TickerInfo", id], getTickerInfo, {
+    refetchInterval: 5000
+  });
 
   const loading = CoinLoading && TickerLoading;
   const success = CoinSuccess && TickerSuccess;
@@ -96,8 +98,8 @@ function CoinDetail() {
   useEffect(() => {
     setCoinData(Coin?.data);
     setTickerData(Ticker?.data);
-  }, [loading]);
-
+  }, [loading, Ticker]);
+  
   return (
     <Container>
       <Header>
@@ -122,8 +124,8 @@ function CoinDetail() {
               <span>${coinData?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
-              <span>Open Source:</span>
-              <span>{coinData?.open_source ? "Yes" : "No"}</span>
+              <span>Price:</span>
+              <span>{tickerData?.quotes.USD.price.toFixed(2)}</span>
             </OverviewItem>
           </Overview>
           <Description>{coinData?.description}</Description>
@@ -148,7 +150,7 @@ function CoinDetail() {
 
           <Routes>
             <Route path={"price"} element={<Price />} />
-            <Route path={"chart"} element={<Chart coinId={id}/>} />
+            <Route path={"chart"} element={<PageChart coinId={id}/>} />
           </Routes>
         </>
       )}
