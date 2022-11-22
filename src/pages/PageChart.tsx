@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import dayjs from "dayjs";
 import Chart from "react-apexcharts";
+import { useRecoilValue } from "recoil";
+import { themeState } from "atoms/atoms";
 
 interface props {
   coinId: string | undefined;
@@ -21,16 +23,14 @@ interface historyData {
 
 function PageChart({ coinId }: props) {
   const [chartData, setChartData] = useState<historyData[]>();
+  const theme = useRecoilValue(themeState);
   const getChart = async () =>
     await axios.get(
       `https://ohlcv-api.nomadcoders.workers.dev?coinId=${coinId}`
     );
   const { isLoading, data } = useQuery(["ChartData"], getChart);
-  
-  useMemo(
-    () => data?.status === 200 && setChartData(data?.data),
-    [data]
-  );
+
+  useMemo(() => data?.status === 200 && setChartData(data?.data), [data]);
 
   return (
     <div>
@@ -50,7 +50,7 @@ function PageChart({ coinId }: props) {
           ]}
           options={{
             theme: {
-              mode: "dark",
+              mode: theme,
             },
             chart: {
               height: 500,
@@ -78,11 +78,9 @@ function PageChart({ coinId }: props) {
               type: "gradient",
               gradient: {
                 type: "horizontal",
-                gradientToColors: ["#0be881"],
                 stops: [0, 100],
               },
             },
-            colors: ["#0fbcf9"],
             tooltip: {
               y: {
                 formatter: (value) => `${Math.ceil(value / 1000)}k`,

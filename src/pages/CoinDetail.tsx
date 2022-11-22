@@ -189,6 +189,7 @@ const OverviewItem = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  color: ${(props) => props.theme.textBrightColor};
   span:first-child {
     font-size: 10px;
     font-weight: 400;
@@ -198,6 +199,7 @@ const OverviewItem = styled.div`
 `;
 const Description = styled.p`
   margin: 20px 0px;
+  color: ${(props) => props.theme.textBrightColor};
 `;
 
 const Tabs = styled.div`
@@ -219,6 +221,6 @@ const Tab = styled.span<{ isActive: boolean }>`
   a {
     display: block;
     color: ${(props) =>
-      props.isActive ? props.theme.accentColor : props.theme.textColor};
+      props.isActive ? props.theme.accentColor : props.theme.textBrightColor};
   }
 `;

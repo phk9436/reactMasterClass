@@ -93,13 +93,13 @@ const CoinsLi = styled("li")`
   }
 
   ${(props) => {
-    const { accentColor, bgColor } = props.theme;
+    const { accentColor, textColor } = props.theme;
 
     return css`
-      color: ${bgColor};
+      color: ${textColor};
 
       a {
-        color: ${bgColor};
+        color: ${textColor};
       }
 
       &:hover a {
