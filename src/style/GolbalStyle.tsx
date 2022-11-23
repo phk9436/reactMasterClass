@@ -25,13 +25,6 @@ const GlobalStyle = createGlobalStyle`
 
     body{
         line-height: 1;
-        ${(props) => {
-          const { textColor, bgColor } = props.theme;
-          return css`
-            background-color: ${bgColor};
-            color: ${textColor};
-          `;
-        }}
     }
 
 `;

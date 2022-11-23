@@ -1,14 +1,11 @@
+import TodoList from "pages/TodoList";
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import CoinDetail from "./pages/CoinDetail";
-import CoinList from "./pages/CoinList";
-
 function Router() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<CoinList />} />
-        <Route path="/:id/*" element={<CoinDetail />} />
+        <Route path="/" element={<TodoList/>}></Route>
       </Routes>
     </BrowserRouter>
   );
