@@ -6,23 +6,42 @@ interface formData {
   firstName: string;
   lastName: string;
   password: string;
+  passwordValid: string;
+  extraErr?: string;
 }
 
+type formDataArr = "email" | "firstName" | "lastName" | "password" | "passwordValid";
+
 function TodoList() {
-  const {
-    register,
-    watch,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<formData>({
-    defaultValues: {
-      email: '@naver.com'
-    }
-  });
+  const { register, watch, handleSubmit, formState, setError, setValue } =
+    useForm<formData>({
+      defaultValues: {
+        email: "@naver.com",
+      },
+    });
+  
   const onValid = (data: formData) => {
-    console.log(data);
+    if (data.password !== data.passwordValid) {
+      setError("password", { message: "Passwords are must be same" });
+      setError(
+        "passwordValid",
+        { message: "Passwords are must be same" },
+        { shouldFocus: true }
+      );
+    } else {
+      const formDataKey = Object.keys(watch()) as formDataArr[];
+      formDataKey.forEach((e) => setValue(e,  ""));
+    }
+    //setError("extraErr", {message: "server is offline"})
   };
-  const { email, firstName, lastName, password } = errors;
+  const {
+    email: emailErr,
+    firstName: firstNameErr,
+    lastName: lastNameErr,
+    password: passwordErr,
+    passwordValid: passwordValidErr,
+    extraErr,
+  } = formState.errors;
   return (
     <div>
       <form
@@ -45,7 +64,7 @@ function TodoList() {
             },
           })}
         />
-        <p>{email && `${email.message}`}</p>
+        <p>{emailErr && `${emailErr.message}`}</p>
         <input
           type="text"
           placeholder="firstName"
@@ -57,20 +76,33 @@ function TodoList() {
             },
           })}
         />
-        <p>{firstName && `${firstName.message}`}</p>
+        <p>{firstNameErr && `${firstNameErr.message}`}</p>
         <input
           type="text"
           placeholder="lastName"
-          {...register("lastName", { required: "lastname required" })}
+          {...register("lastName", {
+            required: "lastname required",
+            validate: {
+              noNico: (val) =>
+                val !== "nico" || "firstName 'nico' is not allowed",
+            },
+          })}
         />
-        <p>{lastName && `${lastName.message}`}</p>
+        <p>{lastNameErr && `${lastNameErr.message}`}</p>
         <input
           type="password"
           placeholder="password"
           {...register("password", { required: "password required" })}
         />
-        <p>{password && `${password.message}`}</p>
+        <p>{passwordErr && `${passwordErr.message}`}</p>
+        <input
+          type="passwordVaild"
+          placeholder="passwordValid"
+          {...register("passwordValid", { required: "passwordValid required" })}
+        />
+        <p>{passwordValidErr && `${passwordValidErr.message}`}</p>
         <button>Add</button>
+        <p>{extraErr && `${extraErr.message}`}</p>
       </form>
     </div>
   );
