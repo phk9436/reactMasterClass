@@ -1,15 +1,10 @@
 import { useSetRecoilState } from "recoil";
 import { toDoState } from "atoms/atoms";
+import { Categories, IToDo } from "atoms/atoms";
 
-interface data {
-  text: string;
-  id: number;
-  category: "TO_DO" | "DOING" | "DONE";
-}
-
-function Todo({ text, id, category }: data) {
+function Todo({ text, id, category }: IToDo) {
   const setToDos = useSetRecoilState(toDoState);
-  const changeCat = (category: data["category"]) => {
+  const changeCat = (category: Categories) => {
     setToDos((state) =>
       state.map((e) => {
         if (e.id === id) {
@@ -23,18 +18,18 @@ function Todo({ text, id, category }: data) {
   return (
     <li>
       <span>{`${text}:${category}`}</span>
-      {category !== "TO_DO" && (
-        <button type="button" onClick={() => changeCat("TO_DO")}>
+      {category !== Categories.TO_DO && (
+        <button type="button" onClick={() => changeCat(Categories.TO_DO)}>
           Todo
         </button>
       )}
-      {category !== "DOING" && (
-        <button type="button" onClick={() => changeCat("DOING")}>
+      {category !== Categories.DOING && (
+        <button type="button" onClick={() => changeCat(Categories.DOING)}>
           Doing
         </button>
       )}
-      {category !== "DONE" && (
-        <button type="button" onClick={() => changeCat("DONE")}>
+      {category !== Categories.DONE && (
+        <button type="button" onClick={() => changeCat(Categories.DONE)}>
           Done
         </button>
       )}
