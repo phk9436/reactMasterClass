@@ -1,29 +1,21 @@
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { categoryState, toDoSelector, Categories } from "atoms/atoms";
-import CreateTodo from "components/CreateTodo";
-import Todo from "components/Todo";
 import React from "react";
+import { useRecoilState } from "recoil";
+import { hourSelector, minuteState } from "atoms/atoms";
 
 function TodoList() {
-  const toDoData = useRecoilValue(toDoSelector);
-  const setCategoryState = useSetRecoilState<Categories>(categoryState);
-  const onInput = (e: React.FormEvent<HTMLSelectElement>) => {
-    const categoryVal = e.currentTarget.value as Categories;
-    setCategoryState(categoryVal);
-  };
+  const [minute, setMinute] = useRecoilState(minuteState);
+  const [hour, setHour] = useRecoilState(hourSelector);
+
+  const onMinutesChange = (e:React.FormEvent<HTMLInputElement>) => {
+    setMinute(Number(e.currentTarget.value));
+  }
+  const onHoursChange = (e:React.FormEvent<HTMLInputElement>) => {
+    setHour(Number(e.currentTarget.value));
+  }
   return (
     <div>
-      <h1>To Dos</h1>
-      <select name="" id="" onInput={onInput}>
-        <option value={Categories.TO_DO}>To Do</option>
-        <option value={Categories.DOING}>Doing</option>
-        <option value={Categories.DONE}>Done</option>
-      </select>
-      <CreateTodo />
-      <hr />
-      {toDoData.map((e) => (
-        <Todo key={e.id} {...e} />
-      ))}
+      <input type="number" name="" id="" placeholder="Minutes" value={minute} onChange={onMinutesChange}/>
+      <input type="number" name="" id="" placeholder="Hours" value={hour} onChange={onHoursChange}/>
     </div>
   );
 }
