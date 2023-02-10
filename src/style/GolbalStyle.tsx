@@ -1,6 +1,7 @@
 import { createGlobalStyle, css } from "styled-components";
+import { Itheme } from "./theme";
 
-const GlobalStyle = createGlobalStyle`
+const GlobalStyle = createGlobalStyle<{ theme: Itheme }>`
 
     *, ::before, ::after {
         box-sizing: border-box;
@@ -25,6 +26,7 @@ const GlobalStyle = createGlobalStyle`
 
     body{
         line-height: 1;
+        background-color: ${({ theme }) => theme.bgColor};
     }
 
 `;
