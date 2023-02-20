@@ -12,8 +12,9 @@ function TodoList() {
     if (destination?.droppableId === source.droppableId) {
       setToDos((state) => {
         const oldArr = [...state[source.droppableId]];
+        const draggedVal = oldArr.filter((e) => e.id === Number(draggableId));
         oldArr.splice(source.index, 1);
-        oldArr.splice(destination.index, 0, draggableId);
+        oldArr.splice(destination.index, 0, draggedVal[0]);
         return {
           ...state,
           [source.droppableId]: oldArr,
@@ -23,8 +24,11 @@ function TodoList() {
       setToDos((state) => {
         const sourceArr = [...state[source.droppableId]];
         const destinationArr = [...state[destination.droppableId]];
+        const draggedVal = sourceArr.filter(
+          (e) => e.id === Number(draggableId)
+        );
         sourceArr.splice(source.index, 1);
-        destinationArr.splice(destination.index, 0, draggableId);
+        destinationArr.splice(destination.index, 0, draggedVal[0]);
         return {
           ...state,
           [source.droppableId]: sourceArr,
