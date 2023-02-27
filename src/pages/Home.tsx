@@ -1,58 +1,47 @@
-import {
-  motion,
-  useMotionValue,
-  useTransform,
-  useViewportScroll,
-} from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import styled from "styled-components";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 
 const boxVariants = {
-  hover: {
-    rotate: 90,
+  initial: {
+    opacity: 0,
+    scale: 0,
   },
-  click: {
+  visible: {
+    opacity: 1,
     scale: 1,
-    borderRadius: "50%",
-  },
-  drag: {
-    backgroundColor: "rgb(46, 204, 113)",
+    rotate: 360,
     transition: {
-      duration: 0.3,
-    },
+      type: "spring",
+      duration: 1,
+      bounce: 0.5
+    }
+  },
+  hiding: {
+    opacity: 0,
+    scale: 0,
+    y: 10,
   },
 };
 
 function Home() {
-  const x = useMotionValue(0);
-  const rotate = useTransform(x, [-200, 0, 200], [-360, 0, 360]);
-  const bg = useTransform(
-    x,
-    [-200, 0, 200],
-    [
-      "linear-gradient(135deg, rgb(0, 210, 238), rgb(0, 83, 238))",
-      "linear-gradient(135deg, rgb(238, 0, 153), rgb(221, 0, 238))",
-      "linear-gradient(135deg, rgb(0, 238, 155), rgb(238, 178, 0))",
-    ]
-  );
-  const { scrollYProgress } = useViewportScroll();
-  const scale = useTransform(scrollYProgress, [0, 1], [0.5, 1.3]);
-  useEffect(() => {
-    //x.onChange(() => console.log(x.get()));
-    //x.onChange(() => console.log(rotate.get()));
-    //scrollYProgress.onChange(() => console.log(scrollYProgress.get()));
-  }, []);
+  const [isShow, setIsShow] = useState(false);
+  const changeBox = () => {
+    setIsShow((state) => !state);
+  };
   return (
-    <Wrapper style={{ backgroundImage: bg }}>
-      <Box
-        variants={boxVariants}
-        drag="x"
-        dragSnapToOrigin
-        dragElastic={0.2}
-        dragConstraints={{ left: -100, right: 100 }}
-        style={{ x, rotate, scale }}
-      ></Box>
-      <button onClick={() => x.set(200)}>click</button>
+    <Wrapper>
+      <button onClick={changeBox}>Click</button>
+      <AnimatePresence>
+        {isShow && (
+          <Box
+            variants={boxVariants}
+            initial="initial"
+            animate="visible"
+            exit="hiding"
+          />
+        )}
+      </AnimatePresence>
     </Wrapper>
   );
 }
@@ -60,8 +49,13 @@ function Home() {
 export default Home;
 
 const Wrapper = styled(motion.div)`
-  height: 200vh;
+  height: 100vh;
   width: 100vw;
+  display: flex;
+  padding-top: 30vh;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
 `;
 
 const BoxContainer = styled.div`
@@ -76,9 +70,6 @@ const BoxContainer = styled.div`
 `;
 
 const Box = styled(motion.div)`
-  position: fixed;
-  top: calc(50% - 100px);
-  left: calc(50% - 100px);
   width: 200px;
   height: 200px;
   background-color: #fff;
