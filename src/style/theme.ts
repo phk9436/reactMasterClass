@@ -1,19 +1,14 @@
 import { DefaultTheme } from "styled-components";
 
-export interface Itheme extends DefaultTheme{
-  bgColor: string;
-  boardColor: string;
-  cardColor: string;
-}
-
-export const darktheme: Itheme = {
-  bgColor: "#3F8CF2",
-  boardColor: "#DADFE9",
-  cardColor: "#fff",
-};
-
-export const lighttheme: Itheme = {
-  bgColor: "#3F8CF2",
-  boardColor: "#DADFE9",
-  cardColor: "#fff",
+export const theme: DefaultTheme = {
+  red: "#E51013",
+  black: {
+    veryDark: "#141414",
+    darker: "#181818",
+    lighter: "#2F2F2F",
+  },
+  white: {
+    lighter: "#fff",
+    darker: "#e5e5e5",
+  },
 };
