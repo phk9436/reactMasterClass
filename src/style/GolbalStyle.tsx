@@ -1,6 +1,7 @@
 import { createGlobalStyle, css } from "styled-components";
+import { ITheme } from "./theme";
 
-const GlobalStyle = createGlobalStyle`
+const GlobalStyle = createGlobalStyle<{ theme: ITheme }>`
 
     *, ::before, ::after {
         box-sizing: border-box;
@@ -17,6 +18,7 @@ const GlobalStyle = createGlobalStyle`
 
     a {
         text-decoration: none;
+        color: inherit;
     }
 
     html, body{
@@ -25,7 +27,12 @@ const GlobalStyle = createGlobalStyle`
 
     body{
         line-height: 1;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-weight: 300;
+        color: ${({ theme }) => theme.white.darker};
+        line-height: 1.2;
     }
+    
 
 `;
 

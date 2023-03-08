@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { motion, useViewportScroll, useAnimation } from "framer-motion";
+import { motion, useScroll, useAnimation } from "framer-motion";
 import { Link, useMatch } from "react-router-dom";
 
 const logoVariants = {
@@ -17,30 +17,30 @@ const logoVariants = {
 
 const navVariants = {
   top: {
-    backgroundColor: "rgba(0,0,0,0)"
+    backgroundColor: "rgba(0,0,0,0)",
   },
   scroll: {
-    backgroundColor: "rgba(0,0,0,1)"
-  }
-}
+    backgroundColor: "rgba(0,0,0,1)",
+  },
+};
 
 function Header() {
   const homeMatch = useMatch("tv");
   const [searchOpen, setSearchOpen] = useState(false);
-  const { scrollY } = useViewportScroll();
+  const { scrollY } = useScroll();
   const navAnimate = useAnimation();
 
-  const togleSearch = () => setSearchOpen((state) => !state);
+  const toggleSearch = () => setSearchOpen((state) => !state);
 
   useEffect(() => {
     scrollY.onChange(() => {
-      if(scrollY.get() >= 80) {
+      if (scrollY.get() >= 80) {
         navAnimate.start("scroll");
       } else {
         navAnimate.start("top");
       }
     });
-  }, [scrollY])
+  }, [scrollY]);
 
   return (
     <Nav variants={navVariants} initial="top" animate={navAnimate}>
@@ -49,6 +49,7 @@ function Header() {
           variants={logoVariants}
           whileHover="active"
           initial="normal"
+          animate="normal"
           xmlns="http://www.w3.org/2000/svg"
           width="1024"
           height="276.742"
@@ -74,7 +75,7 @@ function Header() {
       <Col>
         <Search>
           <motion.svg
-            onClick={togleSearch}
+            onClick={toggleSearch}
             animate={{ x: searchOpen ? -210 : 0 }}
             transition={{ type: "linear" }}
             fill="currentColor"
@@ -107,6 +108,7 @@ const Nav = styled(motion.nav)`
   align-items: center;
   position: fixed;
   width: 100%;
+  height: 68px;
   top: 0;
   font-size: 14px;
   padding: 20px 60px;
@@ -144,10 +146,6 @@ const Item = styled.li`
   position: relative;
   &:hover {
     color: ${(props) => props.theme.white.lighter};
-  }
-
-  a {
-    color: inherit;
   }
 `;
 
