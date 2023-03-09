@@ -6,9 +6,24 @@ import { getMovies } from "utils/api";
 import { ImovieData } from "utils/api";
 import { makeImgPath } from "utils/utils";
 
+const rowVariants = {
+  hidden: {
+    x: window.outerWidth + 10,
+  },
+  visible: {
+    x: 0,
+  },
+  exit: {
+    x: -window.outerWidth - 10,
+  },
+};
+
 function Home() {
   const [movieData, setMovieData] = useState<ImovieData[]>([]);
+  const [index, setIndex] = useState(0);
   const { isLoading, data } = useQuery(["movies", "nowPlaying"], getMovies);
+
+  const increaseIdx = () => setIndex((state) => state + 1);
 
   useEffect(() => {
     data && setMovieData(data.data.results);
@@ -22,10 +37,29 @@ function Home() {
         <Loader>Loading...</Loader>
       ) : (
         <>
-          <Banner bgPhoto={backdrop_path && makeImgPath(backdrop_path)}>
+          <Banner
+            bgPhoto={backdrop_path && makeImgPath(backdrop_path)}
+            onClick={increaseIdx}
+          >
             <Title>{title}</Title>
             <Overview>{overview}</Overview>
           </Banner>
+          <Slider>
+            <AnimatePresence>
+              <Row
+                variants={rowVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                key={index}
+                transition={{ type: "tween", duration: 1 }}
+              >
+                {[1, 2, 3, 4, 5, 6].map((e) => (
+                  <Box key={e}>{e}</Box>
+                ))}
+              </Row>
+            </AnimatePresence>
+          </Slider>
         </>
       )}
     </Wrapper>

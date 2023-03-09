@@ -31,6 +31,7 @@ const GlobalStyle = createGlobalStyle<{ theme: ITheme }>`
         font-weight: 300;
         color: ${({ theme }) => theme.white.darker};
         line-height: 1.2;
+        background-color: #000;
     }
     
 
