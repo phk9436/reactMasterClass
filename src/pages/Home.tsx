@@ -5,25 +5,34 @@ import { useQuery } from "@tanstack/react-query";
 import { getMovies } from "utils/api";
 import { ImovieData } from "utils/api";
 import { makeImgPath } from "utils/utils";
-
-const rowVariants = {
-  hidden: {
-    x: window.outerWidth + 10,
-  },
-  visible: {
-    x: 0,
-  },
-  exit: {
-    x: -window.outerWidth - 10,
-  },
-};
+import useGetWindow from 'hooks/useGetWindow';
 
 function Home() {
+  const width = useGetWindow();
   const [movieData, setMovieData] = useState<ImovieData[]>([]);
   const [index, setIndex] = useState(0);
+  const [leaving, setLeaving] = useState(false);
   const { isLoading, data } = useQuery(["movies", "nowPlaying"], getMovies);
 
-  const increaseIdx = () => setIndex((state) => state + 1);
+  const rowVariants = {
+    hidden: {
+      x: width - 10,
+    },
+    visible: {
+      x: 0,
+    },
+    exit: {
+      x: -width + 10,
+    },
+  };
+
+  const increaseIdx = () => {
+    if (leaving) return;
+    setLeaving(true);
+    setIndex((state) => state + 1);
+  };
+
+  const toggleLeaving = () => setLeaving((state) => !state);
 
   useEffect(() => {
     data && setMovieData(data.data.results);
@@ -45,7 +54,7 @@ function Home() {
             <Overview>{overview}</Overview>
           </Banner>
           <Slider>
-            <AnimatePresence>
+            <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
               <Row
                 variants={rowVariants}
                 initial="hidden"
@@ -107,7 +116,7 @@ const Slider = styled.div`
 
 const Row = styled(motion.div)`
   display: grid;
-  gap: 10px;
+  gap: 5px;
   grid-template-columns: repeat(6, 1fr);
   position: absolute;
   width: 100%;
