@@ -7,6 +7,35 @@ import { ImovieData } from "utils/api";
 import { makeImgPath } from "utils/utils";
 import useGetWindow from "hooks/useGetWindow";
 
+const boxVariants = {
+  normal: {
+    scale: 1,
+  },
+  hover: {
+    scale: 1.3,
+    y: -50,
+    transition: {
+      type: "tween",
+      duration: 0.3,
+      delay: 0.2,
+    },
+  },
+};
+
+const infoVariants = {
+  normal: {
+    opacity: 0,
+  },
+  hover: {
+    opacity: 1,
+    transition: {
+      type: "tween",
+      duration: 0.3,
+      delay: 0.2,
+    },
+  },
+};
+
 function Home() {
   const width = useGetWindow();
   const [movieData, setMovieData] = useState<ImovieData[]>([]);
@@ -49,13 +78,6 @@ function Home() {
   };
   const movieArr = sliceMovie();
 
-  const renderSlide = () => {
-    if (movieArr && movieArr[index])
-      return movieArr[index].map((e: ImovieData) => (
-        <Box key={e.id} bgphoto={makeImgPath(e.backdrop_path, "w500")} />
-      ));
-  };
-
   useEffect(() => {
     data && setMovieData(data.data.results);
   }, [isLoading]);
@@ -85,7 +107,25 @@ function Home() {
                 key={index}
                 transition={{ type: "tween", duration: 1 }}
               >
-                {renderSlide()}
+                {movieArr &&
+                  movieArr[index].map((e: ImovieData) => (
+                    <Box
+                      variants={boxVariants}
+                      whileHover="hover"
+                      initial="normal"
+                      transition={{ type: "tween", duration: 0.3 }}
+                      key={e.id}
+                      bgphoto={makeImgPath(e.backdrop_path, "w500")}
+                    >
+                      <Info
+                        key={e.id}
+                        variants={infoVariants}
+                        transition={{ type: "tween", duration: 0.3 }}
+                      >
+                        <h4>{e.title}</h4>
+                      </Info>
+                    </Box>
+                  ))}
               </Row>
             </AnimatePresence>
           </Slider>
@@ -99,6 +139,7 @@ export default Home;
 
 const Wrapper = styled.div`
   background: black;
+  overflow-x: hidden;
 `;
 
 const Loader = styled.div`
@@ -133,7 +174,6 @@ const Slider = styled.div`
   height: 200px;
   position: relative;
   top: -200px;
-  overflow-x: hidden;
 `;
 
 const Row = styled(motion.div)`
@@ -151,4 +191,25 @@ const Box = styled(motion.div)<{ bgphoto: string }>`
   background-position: center center;
   height: 200px;
   font-size: 66px;
+  display: flex;
+  align-items: flex-end;
+
+  &:first-child {
+    transform-origin: center left;
+  }
+
+  &:nth-child(6) {
+    transform-origin: center right;
+  }
+`;
+
+const Info = styled(motion.div)`
+  padding: 10px;
+  background-color: ${(props) => props.theme.black.lighter};
+  width: 100%;
+
+  h4 {
+    text-align: center;
+    font-size: 18px;
+  }
 `;
