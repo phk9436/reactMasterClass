@@ -1,9 +1,8 @@
-import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import styled from "styled-components";
 import { ImovieData } from "utils/api";
 import { makeImgPath } from "utils/utils";
-import { useNavigate, Routes, Route, useMatch } from "react-router-dom";
+import { useNavigate, useMatch } from "react-router-dom";
 
 interface props {
   width: number;
@@ -44,6 +43,7 @@ const infoVariants = {
 function Sliders({ width, movieArr, toggleLeaving, index }: props) {
   const navigate = useNavigate();
   const { params } = useMatch("movies/:movieId") ?? {};
+
   const rowVariants = {
     hidden: {
       x: width - 10,
@@ -75,7 +75,6 @@ function Sliders({ width, movieArr, toggleLeaving, index }: props) {
   const modalData =
     movieArr[index] &&
     movieArr[index].find((e: ImovieData) => `${e.id}` === params?.movieId);
-  console.log(modalData);
 
   return (
     <>

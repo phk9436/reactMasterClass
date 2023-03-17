@@ -31,11 +31,3 @@ export const getMovies = async () => {
   }
 };
 
-export const getMovieImg = async (path: string, size: string = "original") => {
-  try {
-    const api = await axios.get(`https://image.tmdb.org/t/p/${size}/${path}`);
-    if (api.status === 200) return api;
-  } catch (err) {
-    console.dir(err);
-  }
-};
