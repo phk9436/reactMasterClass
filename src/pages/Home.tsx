@@ -26,13 +26,14 @@ function Home() {
 
   const sliceMovie = () => {
     if (!movieList) return;
-    const movieArr: any[] = [];
+    const movieArr: ImovieData[][] = [];
     const movieArrLength = Math.floor(movieList.length / 6);
     for (let i = 0; i < movieArrLength; i++) movieArr.push([]);
     movieList.forEach((e, i) => {
       const arrLength = Math.floor(i / 6);
       movieArr[arrLength].push(e);
     });
+    console.log(movieArr)
     return movieArr;
   };
   const movieArr = sliceMovie() || [];

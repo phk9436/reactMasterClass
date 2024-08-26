@@ -6,7 +6,7 @@ import { useNavigate, useMatch } from "react-router-dom";
 
 interface props {
   width: number;
-  movieArr: any[];
+  movieArr: ImovieData[][];
   toggleLeaving: () => void;
   index: number;
 }
